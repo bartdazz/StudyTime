@@ -34,6 +34,7 @@ def select_subject(subjects):
 
 def format_time(time):
     # prints time when given in seconds
+    time = time if type(time) == int else int(time)
     if time >= 3600:
         hours = int(time // 3600)
         rem_seconds = time % 3600
@@ -59,13 +60,7 @@ def start_stopwatch():
 
         if cmd == "c":
             end_time = datetime.now()
-            elapsed_seconds = end_time - start_time
-            # transform to seconds and consider integer not float
-            elapsed_seconds = (
-                elapsed_seconds
-                if type(elapsed_seconds) == int
-                else int(elapsed_seconds.total_seconds())
-            )
+            elapsed_seconds = (end_time - start_time).total_seconds()
             print(f"You've studied for {format_time(elapsed_seconds)}\n")
 
         elif cmd == "s":
@@ -124,6 +119,7 @@ def show_statistics():
     # Total minutes per subject
     print("\nTotal minutes per subject:")
     df_subj = df.groupby("Subject")["Seconds"].sum()
+    print(type(df_subj[0]))
     print(df_subj.apply(format_time))
 
     # Daily totals
