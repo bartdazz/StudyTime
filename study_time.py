@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -116,7 +117,7 @@ def log_study_time(subject, seconds, start_time):
     # Save
     df.to_csv(data_file, index=False)
 
-    print(f"Today you've studied {subject} for {format_time(seconds)}.\n")
+    print(f"You have just studied {subject} for {format_time(seconds)}.\n")
 
 
 def show_statistics():
@@ -155,15 +156,45 @@ def show_statistics():
 
 def show_plots():
     """
-    Shows a pie chart with the different subjects
+    Shows a pie chart with the different subjects and
+    a bar plot with the study time of the last 7 days
     """
     df = pd.read_csv(data_file)
     df_subj = df.groupby("Subject")["Seconds"].sum()
 
+    # plotting the pie chart
     plt.figure(figsize=(6, 6))
     df_subj.plot(kind="pie", autopct="%1.1f%%")
     plt.title("Study Time Distribution by Subject")
     plt.ylabel("")
+    plt.show()
+
+    # computing values for histogram of study time
+    # of the last week
+    df["Date"] = pd.to_datetime(df["Date"])
+
+    today = pd.Timestamp.today().normalize()
+    last_week = today - pd.Timedelta(days=7)
+
+    # Filter last 7 days
+    df_last_week = df[df["Date"] >= last_week]
+
+    # Group by day
+    df_daily = df_last_week.groupby("Date")["Seconds"].sum()
+
+    # Convert seconds → hours
+    df_daily_hours = df_daily / 3600
+
+    # --- HISTOGRAM / BAR CHART ---
+    plt.figure(figsize=(10, 5))
+    plt.bar(df_daily_hours.index, df_daily_hours.values)
+
+    plt.xlabel("Date")
+    plt.ylabel("Hours studied")
+    plt.title("Study Time in the Last 7 Days")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+
     plt.show()
 
 
