@@ -185,13 +185,24 @@ def show_plots():
     # Convert seconds → hours
     df_daily_hours = df_daily / 3600
 
-    # --- HISTOGRAM / BAR CHART ---
-    plt.figure(figsize=(10, 5))
-    plt.bar(df_daily_hours.index, df_daily_hours.values)
+    # Mean study time (in hours)
+    mean_hours = df_daily_hours.mean()
 
-    plt.xlabel("Date")
-    plt.ylabel("Hours studied")
-    plt.title("Study Time in the Last 7 Days")
+    # --- HISTOGRAM / BAR CHART ---
+    plt.style.use("seaborn-v0_8")
+    plt.figure(figsize=(10, 5))
+    color = plt.cm.Blues(0.6)
+    plt.bar(df_daily_hours.index, df_daily_hours.values, color=color)
+
+    # Add dashed horizontal mean line
+    plt.axhline(mean_hours, color = "black", linestyle="--", linewidth=1.5)
+
+    # adding a grid
+    plt.grid(axis='y', linestyle='--', alpha=0.4)
+
+    plt.title("Study Time in the Last Week", fontsize=16, pad=20)
+    plt.xlabel("Date", fontsize=12)
+    plt.ylabel("Hours Studied", fontsize=12)
     plt.xticks(rotation=45)
     plt.tight_layout()
 
