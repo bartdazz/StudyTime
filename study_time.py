@@ -9,10 +9,13 @@ import pandas as pd
 data_file = "StudyTime.csv"
 if os.path.exists(data_file):
     df = pd.read_csv(data_file)
-    subjects = df["Subject"].unique().tolist()
+    subjects = df["Subject"].fillna("NaN").unique().tolist()
 else:
     subjects = []
 
+# clear the screen - Windows, Linux and MacOS
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def select_subject(subjects):
     """
@@ -23,6 +26,7 @@ def select_subject(subjects):
         print(f"{i}. {subj}")
     print(f"{len(subjects)+1}. Add a new subject")
 
+   
     choice = int(input("Select a number: "))
     if choice == len(subjects) + 1:
         new_subject = input("Enter new subject name: ").strip()
@@ -159,6 +163,11 @@ def show_plots():
     Shows a pie chart with the different subjects and
     a bar plot with the study time of the last 7 days
     """
+
+    if not os.path.exists(data_file):
+        print("No study data yet.")
+        return
+
     df = pd.read_csv(data_file)
     df_subj = df.groupby("Subject")["Seconds"].sum()
 
@@ -217,6 +226,8 @@ def add_time():
 
 
 def main():
+
+    clear_screen()
     while True:
         print("\n===== STUDY TRACKER =====")
         print("1. Start a study session")
