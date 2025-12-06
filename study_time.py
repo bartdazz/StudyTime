@@ -139,7 +139,6 @@ def show_statistics():
     # Total minutes per subject
     print("\nTotal minutes per subject:")
     df_subj = df.groupby("Subject")["Seconds"].sum()
-    print(type(df_subj[0]))
     print(df_subj.apply(format_time))
 
     # Daily totals
@@ -156,7 +155,13 @@ def show_statistics():
     # Overall total
     total_all = df["Seconds"].sum()
     print(f"\nOverall study time: {format_time(total_all)}\n")
+    
+    today = pd.Timestamp.today().normalize()
 
+    # Filter for rows matching today and sum the seconds
+    today_seconds = df[df["Date"] == today]["Seconds"].sum()
+
+    print(f"Study time today:     {format_time(today_seconds)}")
 
 def show_plots():
     """
