@@ -20,20 +20,24 @@ if os.path.exists(data_file):
 else:
     subjects = []
 
-# clear the screen - Windows, Linux and MacOS
+
 def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    """
+    clear the screen - Windows, Linux and MacOS
+    """
+    os.system("cls" if os.name == "nt" else "clear")
+
 
 def select_subject(subjects):
     """
     functions that allows the user to select which subject to study
     """
+
     print("What subject are you studying?")
     for i, subj in enumerate(subjects, start=1):
         print(f"{i}. {subj}")
     print(f"{len(subjects)+1}. Add a new subject")
 
-   
     choice = int(input("Select a number: "))
     if choice == len(subjects) + 1:
         new_subject = input("Enter new subject name: ").strip()
@@ -203,8 +207,14 @@ def show_plots():
     # Group by day
     df_daily = df_last_week.groupby("Date")["Seconds"].sum()
 
+    # Create complete date range from first study day to today
+    full_range = pd.date_range(start=df_last_week["Date"].min(), end=pd.Timestamp.today())
+
+    # Reindex → missing days become NaN → fill with 0
+    df_daily_full = df_daily.reindex(full_range, fill_value=0)
+
     # Convert seconds → hours
-    df_daily_hours = df_daily / 3600
+    df_daily_hours = df_daily_full / 3600
 
     # Mean study time (in hours)
     mean_hours = df_daily_hours.mean()
@@ -216,10 +226,10 @@ def show_plots():
     plt.bar(df_daily_hours.index, df_daily_hours.values, color=color)
 
     # Add dashed horizontal mean line
-    plt.axhline(mean_hours, color = "black", linestyle="--", linewidth=1.5)
+    plt.axhline(mean_hours, color="black", linestyle="--", linewidth=1.5)
 
     # adding a grid
-    plt.grid(axis='y', linestyle='--', alpha=0.4)
+    plt.grid(axis="y", linestyle="--", alpha=0.4)
 
     plt.title("Study Time in the Last Week", fontsize=16, pad=20)
     plt.xlabel("Date", fontsize=12)
