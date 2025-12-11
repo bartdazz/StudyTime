@@ -4,9 +4,16 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# importing the cvs in which to record study sessions
+# importing the cvs in which to record study sessions.
+# The file is always saved in the same folder where
+# the file study_time.py is located, wherever the 
+# script is runned.
+
+# get path of where this file is located
+script_dir = os.path.dirname(os.path.abspath(__file__))
+data_file = os.path.join(script_dir, "StudyTime.csv")
+
 # subjects = list of subjects to study
-data_file = "StudyTime.csv"
 if os.path.exists(data_file):
     df = pd.read_csv(data_file)
     subjects = df["Subject"].fillna("NaN").unique().tolist()
@@ -143,7 +150,6 @@ def show_statistics():
     # Total minutes per subject
     print("\nTotal minutes per subject:")
     df_subj = df.groupby("Subject")["Seconds"].sum()
-    print(type(df_subj[0]))
     print(df_subj.apply(format_time))
 
     # Daily totals
@@ -159,8 +165,14 @@ def show_statistics():
 
     # Overall total
     total_all = df["Seconds"].sum()
-    print(f"\nOverall study time: {format_time(total_all)}\n")
+    print(f"\nOverall study time: {format_time(total_all)}")
+    
+    today = pd.Timestamp.today().normalize()
 
+    # Filter for rows matching today and sum the seconds
+    today_seconds = df[df["Date"] == today]["Seconds"].sum()
+
+    print(f"Study time today:     {format_time(today_seconds)}")
 
 def show_plots():
     """
