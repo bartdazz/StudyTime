@@ -4,9 +4,16 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# importing the csv in which to record study sessions
+# importing the cvs in which to record study sessions.
+# The file is always saved in the same folder where
+# the file study_time.py is located, wherever the 
+# script is runned.
+
+# get path of where this file is located
+script_dir = os.path.dirname(os.path.abspath(__file__))
+data_file = os.path.join(script_dir, "StudyTime.csv")
+
 # subjects = list of subjects to study
-data_file = "StudyTime.csv"
 if os.path.exists(data_file):
     df = pd.read_csv(data_file)
     subjects = df["Subject"].fillna("NaN").unique().tolist()
