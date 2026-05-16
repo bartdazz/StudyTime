@@ -200,6 +200,7 @@ def show_statistics():
     # Overall total study time of the past week
     total_all = df_daily_full.sum()
     print(f"\nOverall study time in the last week: {format_time(total_all)}\n")
+    print(f"\nMean study time in the last week: {format_time(total_all/7)}")
 
     # Comparison with the previous week
     df_daily_full_prev_week = weekly_df(df, 2)
